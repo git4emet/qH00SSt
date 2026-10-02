@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PDF-Tuned Context Buttonscape — draft demo</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; color: #f7f8ff; padding: 24px;
+      background: radial-gradient(circle at 50% 12%, #182760 0, #080d20 46%, #030610 100%);
+    }
+    main { max-width: 1220px; margin: auto; }
+    .controls {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px; margin-bottom: 18px;
+    }
+    label { display: grid; gap: 6px; font-size: 12px; color: #c9d5ff; }
+    select, input {
+      background: #101833; color: white; border: 1px solid #364673;
+      border-radius: 10px; padding: 10px;
+    }
+    pre {
+      min-height: 130px; white-space: pre-wrap; background: rgba(4,8,20,.82);
+      border: 1px solid #283761; padding: 14px; border-radius: 14px; overflow: auto;
+    }
+    code { color: #9de3ff; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>PDF-Tuned Context Buttonscape <small>draft v0.2</small></h1>
+  <p>The same capabilities reshape around attention, evidence, schema state, authority, retrieval budget, and skill-graph position.</p>
+
+  <div class="controls">
+    <label>Surface
+      <select id="context">
+        <option value="partychain">PartyChain</option>
+        <option value="origami">Origami OS</option>
+        <option value="fleetacademy">Fleet Academy</option>
+        <option value="catlabs">CatLabs Studio</option>
+        <option value="fieldstream">AET FieldStream</option>
+        <option value="makerjournal">Maker’s Journal</option>
+        <option value="voicebridge">Voice Bridge</option>
+        <option value="sharedproject">Shared Project</option>
+      </select>
+    </label>
+    <label>Attention
+      <select id="attention"><option>ambient</option><option selected>focused</option><option>high</option></select>
+    </label>
+    <label>Mobility
+      <select id="mobility"><option selected>stationary</option><option>mobile</option><option>in-motion</option></select>
+    </label>
+    <label>Modality
+      <select id="modality"><option>visual</option><option>voice</option><option>touch</option><option selected>multimodal</option></select>
+    </label>
+    <label>Authority
+      <select id="authority">
+        <option>owner</option><option>authorial</option><option>editor</option><option>explainer</option>
+        <option>publisher</option><option>organizer</option><option>operator</option><option>reviewer</option>
+        <option selected>participant</option><option>system</option>
+      </select>
+    </label>
+    <label>Evidence
+      <select id="evidence">
+        <option>unknown</option><option>speculative</option><option>research-supported</option>
+        <option>documented</option><option selected>observed</option><option>implemented</option><option>demonstrated</option>
+      </select>
+    </label>
+    <label>Schema stage
+      <select id="schema">
+        <option>raw</option><option>retrieved</option><option selected>aligned</option><option>validated</option><option>drift-review</option>
+      </select>
+    </label>
+    <label>Retrieval budget
+      <select id="retrieval"><option selected>skip</option><option>shallow</option><option>deep</option></select>
+    </label>
+    <label>World/skill layer
+      <select id="world">
+        <option>world</option><option>shared-skill</option><option selected>skill-artifact</option>
+        <option>coordination</option><option>transfer</option>
+      </select>
+    </label>
+    <label>Skill scope
+      <select id="scope"><option>shared</option><option selected>task-specific</option></select>
+    </label>
+    <label>Group mode
+      <select id="group"><option selected>solo</option><option>fixed</option><option>dynamic</option></select>
+    </label>
+    <label>Risk
+      <select id="risk"><option selected>low</option><option>medium</option><option>high</option></select>
+    </label>
+  </div>
+
+  <mobiius-button-hud id="hud"></mobiius-button-hud>
+
+  <h2>Context identifier</h2>
+  <pre id="contextKey"></pre>
+
+  <h2>Command</h2>
+  <pre id="output">Tap a button.</pre>
+</main>
+
+<script type="module">
+  import {
+    BUTTONSCAPE_REGISTRY,
+    contextKey
+  } from "../dist/index.js";
+
+  const ids = [
+    "context","attention","mobility","modality","authority","evidence",
+    "schema","retrieval","world","scope","group","risk"
+  ];
+  const el = Object.fromEntries(ids.map((id) => [id, document.querySelector(`#${id}`)]));
+  const hud = document.querySelector("#hud");
+  const output = document.querySelector("#output");
+  const contextKeyOut = document.querySelector("#contextKey");
+
+  const capabilityState = Object.fromEntries(
+    BUTTONSCAPE_REGISTRY.buttons.map((button, index) => [
+      button.capabilityId,
+      {
+        observed: true, supported: true, granted: true, context: true,
+        policy: index === 4 || index === 8 ? "ask" : "allow"
+      }
+    ])
+  );
+
+  const refresh = () => {
+    const identifier = {
+      surface: el.context.value,
+      scene: "demo",
+      role: el.authority.value,
+      phase: "act",
+      attention: el.attention.value,
+      mobility: el.mobility.value,
+      modality: el.modality.value,
+      authority: el.authority.value,
+      guardianTheme: "none",
+      evidence: el.evidence.value,
+      schemaStage: el.schema.value,
+      retrievalBudget: el.retrieval.value,
+      worldLayer: el.world.value,
+      skillScope: el.scope.value,
+      groupMode: el.group.value,
+      risk: el.risk.value,
+      sourceClass: "mixed",
+      sourceConceptRefs: [
+        "pdf.integrated-routing",
+        "pdf.schema-extraction",
+        "pdf.agent-skill-map"
+      ]
+    };
+    hud.registry = BUTTONSCAPE_REGISTRY;
+    hud.runtime = {
+      contextId: el.context.value,
+      identifier,
+      oneHandMode: true,
+      maxLabelChars: 18,
+      capabilities: capabilityState,
+      state: {
+        "capture.active": false,
+        "surface.open": true,
+        "share.active": false,
+        "voice.active": false,
+        "view.expanded": true
+      }
+    };
+    contextKeyOut.textContent = contextKey(identifier);
+  };
+
+  for (const node of Object.values(el)) node.addEventListener("change", refresh);
+  hud.addEventListener("mobiius-command", (event) => {
+    output.textContent = JSON.stringify(event.detail, null, 2);
+  });
+  refresh();
+</script>
+</body>
+</html>

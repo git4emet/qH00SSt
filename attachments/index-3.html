@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Möbii³us Context Buttonscape — draft demo</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 20%, #172251 0, #080d20 48%, #030610 100%);
+      color: #f7f8ff;
+      padding: 24px;
+    }
+    main { max-width: 1100px; margin: auto; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    select, label {
+      background: #101833;
+      color: white;
+      border: 1px solid #364673;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    pre {
+      min-height: 150px;
+      white-space: pre-wrap;
+      background: rgba(4,8,20,.82);
+      border: 1px solid #283761;
+      padding: 14px;
+      border-radius: 14px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Context Buttonscape <small>draft v0.1</small></h1>
+  <p>Same capabilities. Context-shaped labels. Synonyms forward; antonyms when the state turns.</p>
+
+  <div class="controls">
+    <label>
+      Context
+      <select id="context">
+        <option value="partychain">PartyChain</option>
+        <option value="origami">Origami OS</option>
+        <option value="fleetacademy">Fleet Academy</option>
+        <option value="catlabs">CatLabs Studio</option>
+        <option value="fieldstream">AET FieldStream</option>
+        <option value="makerjournal">Maker’s Journal</option>
+        <option value="voicebridge">Voice Bridge</option>
+        <option value="sharedproject">Shared Project</option>
+      </select>
+    </label>
+    <label><input id="oneHand" type="checkbox" checked> one-hand mode</label>
+    <label><input id="shared" type="checkbox"> share is active</label>
+    <label><input id="voice" type="checkbox"> voice is active</label>
+  </div>
+
+  <mobiius-button-hud id="hud"></mobiius-button-hud>
+
+  <h2>Command</h2>
+  <pre id="output">Tap a button.</pre>
+</main>
+
+<script type="module">
+  import {
+    BUTTONSCAPE_REGISTRY
+  } from "../dist/index.js";
+
+  const capabilityIds = BUTTONSCAPE_REGISTRY.buttons.map(
+    (button) => button.capabilityId
+  );
+
+  const capabilityState = Object.fromEntries(
+    capabilityIds.map((id, index) => [
+      id,
+      {
+        observed: true,
+        supported: true,
+        granted: true,
+        context: true,
+        policy: index === 4 || index === 8 ? "ask" : "allow"
+      }
+    ])
+  );
+
+  const hud = document.querySelector("#hud");
+  const context = document.querySelector("#context");
+  const oneHand = document.querySelector("#oneHand");
+  const shared = document.querySelector("#shared");
+  const voice = document.querySelector("#voice");
+  const output = document.querySelector("#output");
+
+  const refresh = () => {
+    hud.registry = BUTTONSCAPE_REGISTRY;
+    hud.runtime = {
+      contextId: context.value,
+      oneHandMode: oneHand.checked,
+      maxLabelChars: 15,
+      capabilities: capabilityState,
+      state: {
+        "capture.active": false,
+        "surface.open": true,
+        "share.active": shared.checked,
+        "voice.active": voice.checked,
+        "view.expanded": true
+      }
+    };
+  };
+
+  for (const element of [context, oneHand, shared, voice]) {
+    element.addEventListener("change", refresh);
+  }
+
+  hud.addEventListener("mobiius-command", (event) => {
+    output.textContent = JSON.stringify(event.detail, null, 2);
+  });
+
+  refresh();
+</script>
+</body>
+</html>
