@@ -239,6 +239,7 @@ export function recordLaunch(
   };
 }
 
+export function restoreWork(raw: unknown): WorkState {
   if (!raw || typeof raw !== "object") return emptyWork();
   const o = raw as Partial<WorkState>;
   if (o.schema !== WORKSURFACE_SCHEMA) return emptyWork();

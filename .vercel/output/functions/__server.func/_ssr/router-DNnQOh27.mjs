@@ -3,8 +3,8 @@ import { n as require_react } from "../_libs/@radix-ui/react-compose-refs+[...].
 import { _ as createFileRoute, b as require_jsx_runtime, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BOAbBZVV.js
-var router_BOAbBZVV_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DNnQOh27.js
+var router_DNnQOh27_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -298,8 +298,8 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-03fxtIK9.css";
-var APP_NAME = "Cyclic Lab";
+var styles_default = "/assets/styles-Dy9Q381I.css";
+var APP_NAME = "Oral bench";
 var Route$1 = createRootRoute({
 	head: () => ({
 		meta: [
@@ -311,7 +311,7 @@ var Route$1 = createRootRoute({
 			{ title: APP_NAME },
 			{
 				name: "description",
-				content: "Cyclostationary detector with GLRT verdicts and TOFAR receipts."
+				content: "Context notes for named work. Chat exports become situations and next actions. Code stays out of the note."
 			},
 			{
 				name: "theme-color",
@@ -362,7 +362,7 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-tB8eSEto.mjs");
+var $$splitComponentImporter = () => import("./routes-CcEpasFq.mjs");
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
 	id: "/",
 	path: "/",
@@ -376,4 +376,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_BOAbBZVV_exports as t };
+export { getRouter, router_DNnQOh27_exports as t };

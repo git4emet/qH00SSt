@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Cyclic Lab";
+const APP_NAME = "Oral bench";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       { title: APP_NAME },
       {
         name: "description",
-        content: "Cyclostationary detector with GLRT verdicts and TOFAR receipts.",
+        content: "Context notes for named work. Chat exports become situations and next actions. Code stays out of the note.",
       },
       { name: "theme-color", content: "#0b0c0e" },
     ],
