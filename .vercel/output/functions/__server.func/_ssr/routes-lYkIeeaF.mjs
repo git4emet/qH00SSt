@@ -6,7 +6,7 @@ import { n as clsx, t as cva } from "../_libs/class-variance-authority+clsx.mjs"
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { t as Slot } from "../_libs/radix-ui__react-slot.mjs";
 import { n as blake2s, t as sha256 } from "../_libs/noble__hashes.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CcEpasFq.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-lYkIeeaF.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function cn(...inputs) {
@@ -1709,6 +1709,153 @@ function EventList({ events, empty }) {
 function shortHash(h) {
 	return h.replace(/^(sha256:|blake2s:|evt_)/, "").length > 16 ? `${h.slice(0, 18)}…` : h;
 }
+var NAME = "oral-loop-v1";
+var log = [];
+var listeners = /* @__PURE__ */ new Set();
+function recentLoops() {
+	return log.slice();
+}
+function remember(event) {
+	if (log.some((item) => item.id === event.id)) return;
+	log.unshift(event);
+	if (log.length > 24) log.pop();
+	for (const hear of listeners) hear(event);
+}
+function postLoop(input) {
+	const event = {
+		id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `loop-${log.length}`,
+		kind: input.kind,
+		detail: input.detail,
+		at: (/* @__PURE__ */ new Date()).toISOString()
+	};
+	remember(event);
+	try {
+		if (typeof BroadcastChannel === "undefined") return event;
+		const channel = new BroadcastChannel(NAME);
+		channel.postMessage(event);
+		channel.close();
+	} catch {}
+	return event;
+}
+function subscribeLoop(hear) {
+	listeners.add(hear);
+	let channel = null;
+	try {
+		if (typeof BroadcastChannel !== "undefined") {
+			channel = new BroadcastChannel(NAME);
+			channel.onmessage = (message) => remember(message.data);
+		}
+	} catch {
+		channel = null;
+	}
+	return () => {
+		listeners.delete(hear);
+		channel?.close();
+	};
+}
+/** A point on the plane, rotated and shifted by how many changes have happened. A local map, not a proof. */
+function affineTransit(step) {
+	const turn = step * .2;
+	const a = Math.cos(turn);
+	const b = Math.sin(turn);
+	return {
+		x: Math.round((a + step * .1) * 100) / 100,
+		y: Math.round(b * 100) / 100
+	};
+}
+var CELLS = 144;
+function LoopRail() {
+	const [events, setEvents] = (0, import_react.useState)(() => recentLoops());
+	(0, import_react.useEffect)(() => subscribeLoop(() => setEvents(recentLoops())), []);
+	const step = events.length;
+	const point = affineTransit(step);
+	const latest = events[0];
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex flex-col gap-4",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "max-w-xl text-sm leading-relaxed text-muted",
+				children: "This page is the loop. It runs in the browser and hears a change when the notes, the checks, or the skill phase move. It does not wait on a clock, and it does not leave this origin."
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-[var(--radius-md)] border border-border bg-surface p-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "text-base font-medium text-fg",
+						children: "offline-canvas"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm leading-relaxed text-muted",
+						children: "Twelve by twelve marks on this page. They shift when the bench shifts. This is not a field board."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-3 grid grid-cols-12 gap-px",
+						role: "img",
+						"aria-label": `${step} state changes recorded on a twelve by twelve grid`,
+						children: Array.from({ length: CELLS }, (_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `block h-2 w-full rounded-[2px] ${(i + step) % 5 === 0 ? "bg-accent" : (i + step) % 5 === 1 ? "bg-ok" : "bg-subtle/50"}` }, i))
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-[var(--radius-md)] border border-border bg-surface p-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "text-base font-medium text-fg",
+						children: "phenoplane-affine-transit"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm leading-relaxed text-muted",
+						children: "A point starts at (1, 0). Each change rotates it and steps it sideways. A local map. Not a proof."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "mt-3 font-mono text-sm text-fg",
+						children: [
+							"step ",
+							step,
+							" → (",
+							point.x,
+							", ",
+							point.y,
+							")"
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-[var(--radius-md)] border border-border bg-surface p-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "text-base font-medium text-fg",
+						children: "skill-creator"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm leading-relaxed text-muted",
+						children: "A state change is not a new skill. Draft, test, review, and improve still live on the Skill lane."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-3 text-sm text-fg",
+						children: latest ? `${latest.kind}: ${latest.detail}` : "No change yet."
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+				className: "flex flex-col gap-2",
+				children: events.map((event) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+					className: "rounded-[var(--radius-sm)] border border-border px-3 py-2 text-sm text-fg",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+						className: "text-muted",
+						children: [
+							event.at.slice(11, 19),
+							" · ",
+							event.kind,
+							". "
+						]
+					}), event.detail]
+				}, event.id))
+			})
+		]
+	});
+}
 var DESKS = [
 	"Petrography",
 	"Geotechnical",
@@ -2473,6 +2620,7 @@ function OralBench() {
 	const [status, setStatus] = (0, import_react.useState)("");
 	const [answering, setAnswering] = (0, import_react.useState)("");
 	const fileRef = (0, import_react.useRef)(null);
+	const announced = (0, import_react.useRef)(false);
 	(0, import_react.useEffect)(() => {
 		const saved = load();
 		setNotes(saved.notes);
@@ -2487,6 +2635,14 @@ function OralBench() {
 			done,
 			waits
 		}));
+		if (!announced.current) {
+			announced.current = true;
+			return;
+		}
+		postLoop({
+			kind: "bench",
+			detail: `${notes.length} notes, ${done.length} checks, ${waits.length} waits`
+		});
 	}, [
 		notes,
 		done,
@@ -3186,6 +3342,17 @@ function SkillBench() {
 	const [ran, setRan] = (0, import_react.useState)(false);
 	const checks = (0, import_react.useMemo)(() => runSkillChecks(), []);
 	const passed = skillPass(checks);
+	const announced = (0, import_react.useRef)(false);
+	(0, import_react.useEffect)(() => {
+		if (!announced.current) {
+			announced.current = true;
+			return;
+		}
+		postLoop({
+			kind: "phase",
+			detail: phase
+		});
+	}, [phase]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex flex-col gap-6",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
@@ -3910,6 +4077,10 @@ var LANES = [
 		label: "Oral"
 	},
 	{
+		id: "loop",
+		label: "Loop"
+	},
+	{
 		id: "work",
 		label: "Work"
 	},
@@ -3958,6 +4129,7 @@ function LabShell() {
 				})]
 			}),
 			lane === "oral" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OralBench, {}) : null,
+			lane === "loop" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoopRail, {}) : null,
 			lane === "work" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WorkSurface, {}) : null,
 			lane === "cyclic" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CyclicLab, { embedded: true }) : null,
 			lane === "skill" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SkillBench, {}) : null,

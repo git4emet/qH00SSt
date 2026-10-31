@@ -9,6 +9,7 @@ import {
   notesToMarkdown,
   type OralNote,
 } from "@/lib/oral/extract";
+import { postLoop } from "@/lib/oral/loopback";
 
 type View = "notes" | "ingest" | "desks" | "connect";
 type Wait = { id: string; since: string; state: "waiting" | "landed" };
@@ -65,6 +66,7 @@ export function OralBench() {
   const [status, setStatus] = useState("");
   const [answering, setAnswering] = useState<string>("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const announced = useRef(false);
 
   useEffect(() => {
     const saved = load();
@@ -77,6 +79,14 @@ export function OralBench() {
   useEffect(() => {
     if (!ready) return;
     localStorage.setItem(KEY, JSON.stringify({ notes, done, waits }));
+    if (!announced.current) {
+      announced.current = true;
+      return;
+    }
+    postLoop({
+      kind: "bench",
+      detail: `${notes.length} notes, ${done.length} checks, ${waits.length} waits`,
+    });
   }, [notes, done, waits, ready]);
 
   const shown = useMemo(

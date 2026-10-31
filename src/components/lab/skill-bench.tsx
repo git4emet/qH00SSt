@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MOBIUS_SKILL, runSkillChecks, skillPass, type SkillPhase } from "@/lib/mobius/skill";
+import { postLoop } from "@/lib/oral/loopback";
 
 const PHASE_COPY: Record<SkillPhase, { title: string; body: string }> = {
   draft: {
@@ -27,6 +28,15 @@ export function SkillBench() {
   const [ran, setRan] = useState(false);
   const checks = useMemo(() => runSkillChecks(), []);
   const passed = skillPass(checks);
+  const announced = useRef(false);
+
+  useEffect(() => {
+    if (!announced.current) {
+      announced.current = true;
+      return;
+    }
+    postLoop({ kind: "phase", detail: phase });
+  }, [phase]);
 
   return (
     <div className="flex flex-col gap-6">

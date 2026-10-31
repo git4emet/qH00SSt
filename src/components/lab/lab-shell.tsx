@@ -1,5 +1,7 @@
 import { AtlasPanel } from "@/components/lab/atlas-panel";
 import { CyclicLab } from "@/components/lab/cyclic-lab";
+import { GrowBench } from "@/components/lab/grow-bench";
+import { LoopRail } from "@/components/lab/loop-rail";
 import { OralBench } from "@/components/lab/oral-bench";
 import { SkillBench } from "@/components/lab/skill-bench";
 import { WorkSurface } from "@/components/lab/work-surface";
@@ -9,6 +11,8 @@ import { useState } from "react";
 
 const LANES = [
   { id: "oral", label: "Oral" },
+  { id: "loop", label: "Loop" },
+  { id: "grow", label: "Grow" },
   { id: "work", label: "Work" },
   { id: "cyclic", label: "Cyclic" },
   { id: "skill", label: "Skill" },
@@ -48,6 +52,8 @@ export function LabShell() {
         </div>
       </header>
       {lane === "oral" ? <OralBench /> : null}
+      {lane === "loop" ? <LoopRail /> : null}
+      {lane === "grow" ? <GrowBench /> : null}
       {lane === "work" ? <WorkSurface /> : null}
       {lane === "cyclic" ? <CyclicLab embedded /> : null}
       {lane === "skill" ? <SkillBench /> : null}
