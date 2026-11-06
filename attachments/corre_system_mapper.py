@@ -122,7 +122,7 @@ def get_mapping(concept):
     Retrieve the technical path for a given concept.
     Returns None if not found.
     """
-    return CONCEPTUAL_MAP.get(concept, None)
+    return CONCEPTUAL_MAP.get(concept, None) 
 
 # Example usage:
 # path = get_mapping("Ω")
